@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/8c0f8bd6-574a-4fbe-b1c1-8a281e27ed94)## docker image download
+## downloading docker image
 
 ### Windows
   - docker desktop 실행
@@ -18,7 +18,7 @@
 
 ### Windows
 
-## 처음 돌릴 때
+* 처음 돌릴 때
 ```
 docker run -it \
     -e DISPLAY=$DISPLAY \
@@ -29,7 +29,7 @@ docker run -it \
     ejungwoo/cssu_image:latest /bin/bash
 ```
 
-## 다시 돌릴때
+* 다시 돌릴때
 ```
 docker start cssu_container
 docker exec -it cssu_container /bin/bash
@@ -37,7 +37,7 @@ docker exec -it cssu_container /bin/bash
  
 ### Mac
 
-## 처음 돌릴 때
+* 처음 돌릴 때
 ```
 docker run -it \
     -e DISPLAY=host.docker.internal:0 \
@@ -48,7 +48,7 @@ docker run -it \
     ejungwoo/cssu_image:latest /bin/bash
 ```
 
-## 다시 돌릴때
+* 다시 돌릴때
 ```
 docker start cssu_container
 docker exec -it cssu_container /bin/bash
