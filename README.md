@@ -53,4 +53,10 @@ docker run -it \
 docker start cssu_container
 docker exec -it cssu_container /bin/bash
 ```
- 
+
+
+ ---
+```
+lilak cssu simulation
+lilak nptool configure.mac
+```
