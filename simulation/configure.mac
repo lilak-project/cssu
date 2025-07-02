@@ -50,6 +50,6 @@ NPTool/Reaction/Isotropic/z0            -250. mm
 NPTool/Reaction/Isotropic/HalfOpenAngleMin        0. deg
 NPTool/Reaction/Isotropic/HalfOpenAngleMax        0. deg
 
-#G4/tracking/verbose 1
-#LKG4Manager/G4CommandFile         geant4_vis.mac
-G4/run/beamOn 100
+G4/tracking/verbose 1
+LKG4Manager/G4CommandFile         geant4_vis.mac
+G4/run/beamOn 1
