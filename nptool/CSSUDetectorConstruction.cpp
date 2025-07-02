@@ -127,16 +127,15 @@ G4VPhysicalVolume* CSSUDetectorConstruction::Construct()
     auto solidGas = new G4Box("solidGas", dmGasVolume.x()*0.5, dmGasVolume.y()*0.5, dmGasVolume.z()*0.5);
     auto logicGas = new G4LogicalVolume(solidGas, materialGas, "logicGas", 0, 0, 0);
     auto placeGas = new G4PVPlacement(G4Transform3D(), logicGas, "Gas", logicWorld, false, 0);
-    runManager -> SetSensitiveDetector(placeGas);
     regionNPSimulation -> AddRootLogicalVolume(logicGas);
     logicGas -> SetVisAttributes(visGas);
 
-    if (sensitiveRanges.size()>1)
+    if (sensitiveRanges.size()>2)
     {
-        for (auto iRange=0; iRange<sensitiveRanges.size()-1; ++iRange)
+        for (auto iRange=0; iRange<sensitiveRanges.size()/2.; ++iRange)
         {
-            int z1 = sensitiveRanges[0+iRange];
-            int z2 = sensitiveRanges[1+iRange];
+            int z1 = sensitiveRanges[0+2*iRange];
+            int z2 = sensitiveRanges[1+2*iRange];
             auto solidBlock = new G4Box(Form("solidBlock_%d_%d",z1,z2), dmGasVolume.x()*0.5, dmGasVolume.y()*0.5, 0.5*double(abs(z2-z1)));
             auto logicBlock = new G4LogicalVolume(solidBlock, materialGas, Form("logicBlock_%d_%d",z1,z2), 0, 0, 0);
             G4Transform3D transformBlock(G4RotationMatrix(), G4ThreeVector(0, 0, -0.5*dmGasVolume.z() + 0.5*double(z1+z2)));
@@ -147,81 +146,24 @@ G4VPhysicalVolume* CSSUDetectorConstruction::Construct()
         }
     }
 
-    if (1)
-    {
-        const G4double X6_PCBX    = 45.20*mm; 
-        const G4double X6_PCBY    = 93.10*mm;
-        const G4double X6_PCBZ    =  2.40*mm;
-        const G4double X6_PCBSub1X = 43.60*mm;
-        const G4double X6_PCBSub1Y = 78.30*mm;
-        const G4double X6_PCBSub1Z =  1.20*mm;
-        const G4double X6_PCBSub1XOffset = 0.0*mm;
-        const G4double X6_PCBSub1YOffset = 6.2*mm;
-        const G4double X6_PCBSub1ZOffset = 0.6*mm;
-        const G4double X6_PCBSub2X = 42.20*mm;
-        const G4double X6_PCBSub2Y = 76.90*mm;
-        const G4double X6_PCBSub2Z =  1.20*mm;
-        const G4double X6_PCBSub2XOffset = 0.0*mm;
-        const G4double X6_PCBSub2YOffset = 6.2*mm;
-        const G4double X6_PCBSub2ZOffset = -0.6*mm;
+    double zPositionSi = par -> InitPar(390,  "CSSUDetectorConstruction/SiZPosition ?? # mm, position of si-detetor in z in local gas coordinate starting from 0");
+    double SidX        = par -> InitPar(50.0, "CSSUDetectorConstruction/SidX ?? # mm") * mm;
+    double SidY        = par -> InitPar(50.0, "CSSUDetectorConstruction/SidY ?? # mm") * mm;
+    double SiThickness = par -> InitPar(0.30, "CSSUDetectorConstruction/SiThickness ?? # mm") * mm;
 
-        const G4double X6_SiX = 43.30*mm;
-        const G4double X6_SiY = 78.00*mm;
-        const G4double X6_SiZ =  1.00*mm; 
-        const G4double X6_SiXOffset =  0.0*mm;
-        const G4double X6_SiYOffset =  6.2*mm;
-        const G4double X6_SiZOffset =  0.5*mm; 
-        const G4double X6_SiActiveX = 40.30*mm; 
-        const G4double X6_SiActiveY = 75.00*mm;
-        const G4double X6_SiActiveZ =  1.00*mm; // 1000 um
+    G4Material* matSi  = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
 
-        const G4int X6_NFrontStrips = 8;
-        const G4int X6_NBackStrips  = 4;
+    G4Box* solidSi = new G4Box("solidSi", SidX/2.,SidY/2.,SiThickness/2.);
+    G4LogicalVolume* logicSi = new G4LogicalVolume(solidSi, matSi,"logicSi",0,0,0);
+    auto m_VisSi = new G4VisAttributes(G4Colour(0., 0.5, 0.5));
+    logicSi -> SetVisAttributes(m_VisSi);
 
-        const G4double Conn_X = 40.0*mm;
-        const G4double Conn_Y =  5.0*mm;
-        const G4double Conn_Z =  5.0*mm;
+    zPositionSi = zPositionSi * mm;
+    zPositionSi = zPositionSi -0.5*dmGasVolume.z();
+    G4Transform3D transformSi(G4RotationMatrix(), G4ThreeVector(0,0,zPositionSi));
+    auto placeSi = new G4PVPlacement(transformSi, logicSi, "Si", logicGas, false, 6);
 
-        ////////////////////////////////////////////////////////////
-        // material definition
-        G4Material* matSi  = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
-        G4Material* matPCB = MaterialManager::getInstance()->GetMaterialFromLibrary("PCB");
-        ////////////////////////////////////////////////////////////
-
-        G4Box* solidX6PCBAll  = new G4Box("solidX6PCBAll",  X6_PCBX/2.,X6_PCBY/2.,X6_PCBZ/2.);
-        G4Box* solidX6PCBSub1 = new G4Box("solidX6PCBSub1", X6_PCBSub1X/2.,X6_PCBSub1Y/2.,X6_PCBSub1Z/2.+0.01*mm); // +0.01 mm for the perfect subtraction of solid
-        G4Box* solidX6PCBSub2 = new G4Box("solidX6PCBSub2", X6_PCBSub2X/2.,X6_PCBSub2Y/2.,X6_PCBSub2Z/2.+0.01*mm); // +0.01 mm for the perfect subtraction of solid
-
-        G4VSolid* solidX6PCBTemp = new G4SubtractionSolid("solidX6PCBTemp", solidX6PCBAll,  solidX6PCBSub1, 0, G4ThreeVector(X6_PCBSub1XOffset, X6_PCBSub1YOffset, X6_PCBSub1ZOffset));
-        G4VSolid* solidX6PCB     = new G4SubtractionSolid("solidX6PCB",     solidX6PCBTemp, solidX6PCBSub2, 0, G4ThreeVector(X6_PCBSub2XOffset, X6_PCBSub2YOffset, X6_PCBSub2ZOffset));
-
-        auto m_VisX6    = new G4VisAttributes(G4Colour(0., 0.5, 0.5));
-        auto m_VisX6PCB = new G4VisAttributes(G4Colour(0.8, 0.5, 0.5));
-        auto m_VisConn  = new G4VisAttributes(G4Colour(0.8, 0.8, 0.8));
-
-        G4LogicalVolume* logicX6PCB = new G4LogicalVolume(solidX6PCB, matPCB,"logicX6PCB",0,0,0);
-        logicX6PCB->SetVisAttributes(m_VisX6PCB);
-
-        G4Box* solidX6Conn = new G4Box("solidX6Conn", Conn_X/2.,Conn_Y/2.,Conn_Z/2.);
-        G4LogicalVolume* logicX6Conn = new G4LogicalVolume(solidX6Conn, matPCB,"logicX6Conn",0,0,0);
-        logicX6Conn->SetVisAttributes(m_VisConn);
-
-        G4Box* solidX6Si = new G4Box("solidX6Si", X6_SiX/2.,X6_SiY/2.,X6_SiZ/2.);
-        G4LogicalVolume* logicX6Si = new G4LogicalVolume(solidX6Si, matSi,"logicX6Si",0,0,0);
-        logicX6Si->SetVisAttributes(m_VisX6);
-
-        auto zPositionSi = par -> InitPar(490, "CSSUDetectorConstruction/SiZPosition ?? # mm, position of si-detetor in z in local gas coordinate starting from 0");
-        zPositionSi = zPositionSi * mm;
-        zPositionSi = zPositionSi -0.5*dmGasVolume.z();
-        G4Transform3D transformX6Si  (G4RotationMatrix(), G4ThreeVector(0,0,zPositionSi));
-        G4Transform3D transformX6PCB (G4RotationMatrix(), G4ThreeVector(-X6_SiXOffset, -X6_SiYOffset, -X6_SiZOffset+zPositionSi));
-        G4Transform3D transformX6Conn(G4RotationMatrix(), G4ThreeVector(-X6_SiXOffset, -X6_SiYOffset - X6_PCBY/2. + Conn_Y/2., X6_PCBZ/2. + Conn_Z/2. + zPositionSi));
-        auto placeX6Si   = new G4PVPlacement(transformX6Si  , logicX6Si  , "X6Si",   logicGas, false, 6);
-        auto placeX6PCB  = new G4PVPlacement(transformX6PCB , logicX6PCB , "X6PCB",  logicGas, false, 7);
-        auto placeX6Conn = new G4PVPlacement(transformX6Conn, logicX6Conn, "X6Conn", logicGas, false, 8);
-
-        runManager -> SetSensitiveDetector(placeX6Si);
-    }
+    runManager -> SetSensitiveDetector(placeSi);
 
     return placeWorld;
 }

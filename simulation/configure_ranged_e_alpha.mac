@@ -1,0 +1,50 @@
+nbeams 10000
+verbose 0
+use_vis false
+dLoss 10
+
+#nbeams 1
+#verbose 1
+#use_vis true
+#dLoss 10
+
+CSSUDetectorConstruction/
+    GasMaterial         CF4 # gas material name. (vacuum, CF4 ,He ,iC4H10 ,CH4 ,P80 ,CO2 ,H2 ,D2 ,MixTwinMusic ,CH4_60_He_40)
+    GasFraction         1
+    GasPressure         30 torr # bar or torr
+    GasTemperature      295  # kelvin
+    WorldSize           200., 200., 500.  # mm
+    GasVolumeSize       200., 200., 400.  # mm
+    SensitiveRanges     50+{dLoss}, 150-{dLoss}, 150+{dLoss}, 350-{dLoss} # mm, int, range of sensitive volume. ex) 0, 20, 40, 60
+    StepLimitInGas      10 # mm
+    SiZPosition         390 # mm, position of si-detetor in z in local gas coordinate starting from 0
+    SidX                50.0 # mm
+    SidY                50.0 # mm
+    SiWidth             0.30 # mm
+
+NPTool/Reaction/Type Isotropic
+
+NPTool/Reaction/Isotropic/
+    Multiplicity        1
+    Particle            4He
+    EnergyHigh          3 MeV
+    EnergyLow           8 MeV
+    z0                  -250. mm
+    HalfOpenAngleMin    0 deg
+    HalfOpenAngleMax    20 deg
+    EnergyDistribution  flat
+
+G4/
+    tracking/verbose {verbose}
+    run/beamOn {nbeams}
+
+simulation_name {NPTool/Reaction/Isotropic/Particle}_{NPTool/Reaction/Isotropic/EnergyLow[0]}_{NPTool/Reaction/Isotropic/EnergyHigh[0]}_{NPTool/Reaction/Isotropic/HalfOpenAngleMax[0]}deg_{CSSUDetectorConstruction/GasMaterial}_{CSSUDetectorConstruction/GasPressure[0]}torr_d{dLoss}_{G4/run/beamOn}
+
+LKG4Manager/
+    G4OutputFile            data/cssu_{simulation_name}.root
+    SetAutoUpdateCopyNo     true # If true, manager will automatically assign unique CopyNo of sensitive physical volumes.
+    SuppressG4InitMessage   true
+    DetectorCosntruction    CSSUDetectorConstruction
+    WriteTextFile           true
+    G4CommandFile           geant4_vis.mac
+    VisMode                 {use_vis}
