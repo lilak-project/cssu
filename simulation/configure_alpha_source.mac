@@ -3,7 +3,7 @@
 #use_vis false
 #dLoss 10
 
-nbeams 1
+nbeams 10
 verbose 1
 use_vis true
 dLoss 10

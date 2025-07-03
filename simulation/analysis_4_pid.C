@@ -6,8 +6,8 @@ void analysis_4_pid()
 
     analysis_3_ee();
 
-    double bin1 = 40;
-    double bin2 = 40;
+    double bin1 = 34;
+    double bin2 = 34;
     cout << bin1 << " low -> " << hist_ee -> GetXaxis() -> GetBinLowEdge(bin1) << endl;
     cout << bin1 << "  up -> " << hist_ee -> GetXaxis() -> GetBinUpEdge(bin2) << endl;
     auto hist_projection = hist_ee -> ProjectionY("projection",bin1,bin2);
