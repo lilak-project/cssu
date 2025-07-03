@@ -9,7 +9,7 @@ use_vis true
 dLoss 10
 
 CSSUDetectorConstruction/
-    GasMaterial         vacuum # gas material name. (vacuum, CF4 ,He ,iC4H10 ,CH4 ,P80 ,CO2 ,H2 ,D2 ,MixTwinMusic ,CH4_60_He_40)
+    GasMaterial         CF4 # gas material name. (vacuum, CF4 ,He ,iC4H10 ,CH4 ,P80 ,CO2 ,H2 ,D2 ,MixTwinMusic ,CH4_60_He_40)
     GasFraction         1
     GasPressure         30 torr # bar or torr
     GasTemperature      295  # kelvin
@@ -27,11 +27,11 @@ NPTool/Reaction/Type Isotropic
 NPTool/Reaction/Isotropic/
     Multiplicity        1
     Particle            4He
-    EnergyHigh          5 MeV
-    EnergyLow           5 MeV
+    EnergyHigh          5.5 MeV
+    EnergyLow           5.5 MeV
     z0                  -250. mm
     HalfOpenAngleMin    0  deg
-    HalfOpenAngleMax    10 deg
+    HalfOpenAngleMax    5 deg
     EnergyDistribution  flat
 
 G4/
