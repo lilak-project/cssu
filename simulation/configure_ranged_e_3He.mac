@@ -1,12 +1,12 @@
-nbeams 10000
-verbose 0
-use_vis false
-dLoss 10
-
-#nbeams 1
-#verbose 1
-#use_vis true
+#nbeams 10000
+#verbose 0
+#use_vis false
 #dLoss 10
+
+nbeams 1
+verbose 1
+use_vis true
+dLoss 10
 
 CSSUDetectorConstruction/
     GasMaterial         CF4 # gas material name. (vacuum, CF4 ,He ,iC4H10 ,CH4 ,P80 ,CO2 ,H2 ,D2 ,MixTwinMusic ,CH4_60_He_40)
